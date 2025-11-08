@@ -5,11 +5,12 @@ import Home from './pages/Home.jsx'
 import About from './pages/About.jsx'
 import Product from './pages/Product.jsx'
 import Login from './pages/Login.jsx'
-import Card from './pages/Card.jsx'
+import Cart from './pages/Cart.jsx'
 import Orders from './pages/Orders.jsx'
 import PlaceOrder from './pages/PlaceOrder.jsx'
 import Contact from './pages/Contact.jsx'
 import Collection from './pages/Collection.jsx'
+
 
 const App = () => {
   return (
@@ -20,7 +21,7 @@ const App = () => {
         <Route path='/about' element={<About />} />
         <Route path='/product/:productId' element={<Product />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/cart' element={<Card />} />
+        <Route path='/cart' element={<Cart />} />
         <Route path='/orders' element={<Orders />} />
         <Route path='/place-order' element={<PlaceOrder />} />
         <Route path='/contact' element={<Contact />} />
