@@ -6,7 +6,7 @@ import { ShopContext } from '../context/ShopContext'
 const Navbar = () => {
 
     const [visible, setVisible] = useState(false);
-    const { setShowSearch } = useContext(ShopContext);
+    const { setShowSearch, getCartCount } = useContext(ShopContext);
     return (
         <div className='flex items-center justify-between py-5 font-medium '>
             {/* Logo Text */}
@@ -39,11 +39,13 @@ const Navbar = () => {
                 <FiSearch onClick={() => setShowSearch(true)} className='w-5 h-5 cursor-pointer hover:text-gray-900' />
 
                 <div className='group relative'>
-                    <FiUser className='w-5 h-5 cursor-pointer hover:text-gray-900' />
+                    <Link to='/login'>
+                        <FiUser className='w-5 h-5 cursor-pointer hover:text-gray-900' />
+                    </Link>
                     <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
                         <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded'>
                             <p className='cursor-pointer hover:text-black'>My Profile</p>
-                            <p className='cursor-pointer hover:text-black'>Orders</p>
+                            <Link to='/orders' className='cursor-pointer hover:text-black'>Orders</Link>
                             <p className='cursor-pointer hover:text-black'>Logout</p>
                         </div>
                     </div>
@@ -51,7 +53,7 @@ const Navbar = () => {
 
                 <Link to='/cart' className='relative'>
                     <FiShoppingCart className='w-5 h-5 hover:text-gray-900' />
-                    <p className='absolute right-[-5px] bottom-[-5px] w-4 bg-black text-white aspect-square rounded-full text-[8px] text-center leading-4'>0</p>
+                    <p className='absolute right-[-5px] bottom-[-5px] w-4 bg-black text-white aspect-square rounded-full text-[8px] text-center leading-4'>{getCartCount()}</p>
                 </Link>
 
                 <FiMenu onClick={() => setVisible(true)} className='w-5 h-5 cursor-pointer sm:hidden hover:text-gray-900' />

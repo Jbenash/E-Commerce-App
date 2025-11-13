@@ -31,7 +31,7 @@ const SearchBar = () => {
 
     return shouldShow ? (
         <div className='border-t border-b text-center py-8'>
-            <div 
+            <div
                 ref={searchRef}
                 className='inline-flex items-center justify-center gap-3 border-2 border-gray-300 px-6 py-3 my-2 mx-3 rounded-full w-3/4 sm:w-1/2 bg-white shadow-md hover:shadow-lg hover:border-gray-400 transition-all duration-300'
             >
