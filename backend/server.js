@@ -4,6 +4,7 @@ import 'dotenv/config'
 import connectDB from './config/db.js'
 import cloudinaryConfig from './config/cloudinary.js'
 import userRouter from './routes/userRoute.js'
+import productRouter from './routes/productRoute.js'
 
 
 // App configuration
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/user', userRouter)
+app.use('/api/product', productRouter)
 
 app.listen(port, () => {
     console.log(`server started on ${port}`)

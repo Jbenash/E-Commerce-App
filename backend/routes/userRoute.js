@@ -9,3 +9,4 @@ userRouter.post('/login', login)
 userRouter.post('/admin', adminLogin)
 
 export default userRouter
+
