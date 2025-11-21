@@ -16,7 +16,7 @@ productRouter.post('/add', adminAuth, upload.fields([
 //thats why i have deifined exctly 4 slots of images 
 
 productRouter.get('/list', listProducts)
-productRouter.post('/remove', adminAuth, removeProducts)
+productRouter.delete('/remove/:productId', adminAuth, removeProducts)
 productRouter.get('/single/:productId', singleProducts)
 
 export default productRouter

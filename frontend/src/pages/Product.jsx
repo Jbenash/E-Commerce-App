@@ -18,21 +18,23 @@ const Product = () => {
             toast.error('Please select a size first!')
             return
         }
-        addToCart(productData.id, size)
+        addToCart(productData._id, size)
         toast.success('Product added to cart!')
     }
 
     const fetchProductData = () => {
-        const product = products.find((item) => item.id === productId)
+        const product = products.find((item) => item._id === productId)
         if (product) {
             setProductData(product)
-            setImage(product.images[0])
+            setImage(product.image?.[0] || '')
             setSize('')
         }
     }
 
     useEffect(() => {
-        fetchProductData()
+        if (products.length > 0) {
+            fetchProductData()
+        }
         window.scrollTo(0, 0)
     }, [productId, products])
 
@@ -45,7 +47,7 @@ const Product = () => {
                 <div className='flex-1 flex flex-col-reverse gap-3 sm:flex-row'>
                     <div className='flex flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full'>
                         {
-                            productData.images.map((item, index) => (
+                            productData.image?.map((item, index) => (
                                 <img
                                     onClick={() => setImage(item)}
                                     src={item}
@@ -121,7 +123,14 @@ const Product = () => {
             {/* Related Products Section */}
             <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
         </div>
-    ) : <div className='opacity-0'></div>
+    ) : (
+        <div className='flex items-center justify-center min-h-screen'>
+            <div className='text-center'>
+                <div className='inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900'></div>
+                <p className='mt-4 text-gray-600'>Loading product...</p>
+            </div>
+        </div>
+    )
 }
 
 export default Product

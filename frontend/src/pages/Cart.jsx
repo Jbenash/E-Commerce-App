@@ -35,7 +35,7 @@ const Cart = () => {
             <div>
                 {
                     cartData.map((item, index) => {
-                        const productData = products.find((prod) => prod.id === item.id)
+                        const productData = products.find((prod) => prod._id === item.id)
                         return (
                             <div className='py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4' key={index}>
                                 <div className='flex items-start gap-6'>

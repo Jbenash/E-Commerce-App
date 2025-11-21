@@ -56,7 +56,7 @@ const Orders = () => {
                             <div>
                                 <div>
                                     {order.items.map((item, idx) => {
-                                        const productData = products.find((product) => product.id === item.productId)
+                                        const productData = products.find((product) => product._id === item.productId)
                                         return productData ? (
                                             <p key={idx} className='py-0.5'>
                                                 {productData.name} <span className='text-xs'>x {item.quantity}</span> <span className='text-xs text-gray-500'>Size: {item.size}</span>

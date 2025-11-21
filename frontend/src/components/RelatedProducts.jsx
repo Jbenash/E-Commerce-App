@@ -24,8 +24,8 @@ const RelatedProducts = ({ category, subCategory }) => {
                 {
                     relatedProducts.map((item, index) => (<ProductItem
                         key={index}
-                        id={item.id}
-                        image={item.images}
+                        id={item._id}
+                        image={item.image}
                         name={item.name}
                         price={item.price}
                     />))

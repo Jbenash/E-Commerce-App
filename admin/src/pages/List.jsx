@@ -21,13 +21,12 @@ const List = ({ token }) => {
     }
   }
 
-  const removeProduct = async (id) => {
+  const removeProduct = async (productId) => {
     try {
-      const response = await axios.post(backendUrl + '/api/product/remove', { id }, {
+
+      const response = await axios.delete(backendUrl + `/api/product/remove/${productId}`, {
         headers: { token }
       })
-
-      console.log("product removed", response);
 
 
       if (response.data.success) {
@@ -35,12 +34,12 @@ const List = ({ token }) => {
         await fetchList()
       } else {
         toast.error(response.data.message)
-        console.log("error in reciving data ", response.data.message);
-
+        console.log('Error message:', response.data.message)
       }
     } catch (error) {
-      console.log(error)
-      toast.error(error.message)
+      console.log('Axios Error:', error)
+      console.log('Error Response:', error.response?.data)
+      toast.error(error.response?.data?.message || error.message)
     }
   }
 
