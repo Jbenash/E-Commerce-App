@@ -42,7 +42,7 @@ const Login = () => {
                     setToken(response.data.token)
                     localStorage.setItem('token', response.data.token)
                     toast.success('Login successful!')
-
+                    navigate('/')
                 } else {
                     toast.error(response.data.message)
                 }
@@ -53,9 +53,6 @@ const Login = () => {
         }
     }
 
-    useEffect(() => {
-        navigate('/')
-    }, [token])
     return (
         <form onSubmit={onSubmitHandler} className='flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800'>
             <div className='inline-flex items-center gap-2 mb-2 mt-10'>

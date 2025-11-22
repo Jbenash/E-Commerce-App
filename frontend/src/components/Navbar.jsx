@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { FiSearch, FiUser, FiShoppingCart, FiMenu, FiChevronLeft } from 'react-icons/fi'
 import { ShopContext } from '../context/ShopContext'
 
@@ -7,6 +7,15 @@ const Navbar = () => {
 
     const [visible, setVisible] = useState(false);
     const { setShowSearch, getCartCount, token, setToken, setCartItems } = useContext(ShopContext);
+    const navigate = useNavigate()
+
+    const logout = () => {
+        localStorage.removeItem('token')
+        setToken('')
+        setCartItems({})
+        navigate('/login')
+    }
+
     return (
         <div className='flex items-center justify-between py-5 font-medium '>
             {/* Logo Text */}
@@ -39,16 +48,22 @@ const Navbar = () => {
                 <FiSearch onClick={() => setShowSearch(true)} className='w-5 h-5 cursor-pointer hover:text-gray-900' />
 
                 <div className='group relative'>
-                    <Link to='/login'>
-                        <FiUser className='w-5 h-5 cursor-pointer hover:text-gray-900' />
-                    </Link>
-                    <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
-                        <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded'>
-                            <p className='cursor-pointer hover:text-black'>My Profile</p>
-                            <Link to='/orders' className='cursor-pointer hover:text-black'>Orders</Link>
-                            <p className='cursor-pointer hover:text-black'>Logout</p>
-                        </div>
-                    </div>
+                    {token ? (
+                        <>
+                            <FiUser className='w-5 h-5 cursor-pointer hover:text-gray-900' />
+                            <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
+                                <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded'>
+                                    <p className='cursor-pointer hover:text-black'>My Profile</p>
+                                    <Link to='/orders' className='cursor-pointer hover:text-black'>Orders</Link>
+                                    <p onClick={logout} className='cursor-pointer hover:text-black'>Logout</p>
+                                </div>
+                            </div>
+                        </> 
+                    ) : (
+                        <Link to='/login'>
+                            <FiUser className='w-5 h-5 cursor-pointer hover:text-gray-900' />
+                        </Link>
+                    )}
                 </div>
 
                 <Link to='/cart' className='relative'>

@@ -1,5 +1,5 @@
-import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import React, { useContext } from 'react'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar.jsx'
 import Home from './pages/Home.jsx'
 import About from './pages/About.jsx'
@@ -14,26 +14,40 @@ import Footer from './components/Footer.jsx'
 import SearchBar from './components/SearchBar.jsx'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { ShopContext } from './context/ShopContext.jsx'
 
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const { token } = useContext(ShopContext)
+  
+  if (!token) {
+    return <Navigate to='/login' replace />
+  }
+  
+  return children
+}
 
 const App = () => {
+  const location = useLocation()
+  const isLoginPage = location.pathname === '/login'
+
   return (
     <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] '>
       <ToastContainer />
-      <Navbar />
-      <SearchBar />
+      {!isLoginPage && <Navbar />}
+      {!isLoginPage && <SearchBar />}
       <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/about' element={<About />} />
-        <Route path='/product/:productId' element={<Product />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/cart' element={<Cart />} />
-        <Route path='/orders' element={<Orders />} />
-        <Route path='/place-order' element={<PlaceOrder />} />
-        <Route path='/contact' element={<Contact />} />
-        <Route path='/collection' element={<Collection />} />
+        <Route path='/' element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path='/about' element={<ProtectedRoute><About /></ProtectedRoute>} />
+        <Route path='/product/:productId' element={<ProtectedRoute><Product /></ProtectedRoute>} />
+        <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+        <Route path='/orders' element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+        <Route path='/place-order' element={<ProtectedRoute><PlaceOrder /></ProtectedRoute>} />
+        <Route path='/contact' element={<ProtectedRoute><Contact /></ProtectedRoute>} />
+        <Route path='/collection' element={<ProtectedRoute><Collection /></ProtectedRoute>} />
       </Routes>
-      <Footer />
+      {!isLoginPage && <Footer />}
     </div>
   )
 }
