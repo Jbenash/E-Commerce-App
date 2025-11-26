@@ -34,7 +34,7 @@ const productSchema = new mongoose.Schema(
             type: Boolean
         },
         date: {
-            type: Number,
+            type: Date,
             required: true
         }
     }
