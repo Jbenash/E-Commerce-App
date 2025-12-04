@@ -1,5 +1,5 @@
 import express from 'express'
-import { allOrders, placeOrder, placeOrderCard, updateStatus, userOrder } from '../controller/orderController.js'
+import { allOrders, placeOrder, updateStatus, userOrders } from '../controller/orderController.js'
 import adminAuth from '../middleware/adminAuth.js'
 import authUser from '../middleware/auth.js'
 
@@ -11,10 +11,9 @@ orderRouter.post('/status', adminAuth, updateStatus)
 
 //payment features
 orderRouter.post('/place', authUser, placeOrder)
-orderRouter.post('/card', authUser, placeOrderCard)
 
 //user features 
-orderRouter.post('/userorders', authUser, userOrder)
+orderRouter.post('/userorders', authUser, userOrders)
 
 
 export default orderRouter

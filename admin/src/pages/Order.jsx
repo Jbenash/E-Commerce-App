@@ -17,7 +17,7 @@ const Order = ({ token }) => {
         headers: { token }
       })
       if (response.data.success) {
-        setOrders(response.data.orders)
+        setOrders(response.data.orderData || [])
       } else {
         toast.error(response.data.message)
       }
@@ -52,7 +52,7 @@ const Order = ({ token }) => {
     <div>
       <h3 className='mb-4 text-lg font-medium'>Order Page</h3>
       <div>
-        {orders.map((order, index) => (
+        {orders && orders.length > 0 ? orders.map((order, index) => (
           <div className='grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700' key={index}>
             <FiPackage className='w-12 h-12 text-gray-400' />
             <div>
@@ -65,17 +65,17 @@ const Order = ({ token }) => {
                   }
                 })}
               </div>
-              <p className='mt-3 mb-2 font-medium'>{order.address.firstName + " " + order.address.lastName}</p>
+              <p className='mt-3 mb-2 font-medium'>{order.shoppingInfo.firstName + " " + order.shoppingInfo.lastName}</p>
               <div>
-                <p>{order.address.street + ","}</p>
-                <p>{order.address.city + ", " + order.address.state + ", " + order.address.country + ", " + order.address.zipcode}</p>
+                <p>{order.shoppingInfo.address.street + ","}</p>
+                <p>{order.shoppingInfo.address.city + ", " + order.shoppingInfo.address.state + ", " + order.shoppingInfo.address.Country + ", " + order.shoppingInfo.address.ZipCode}</p>
               </div>
-              <p>{order.address.phone}</p>
+              <p>{order.shoppingInfo.phoneNo}</p>
             </div>
             <div>
               <p className='text-sm sm:text-[15px]'>Items: {order.items.length}</p>
               <p className='mt-3'>Method: {order.paymentMethod}</p>
-              <p>Payment: {order.payment ? 'Done' : 'Pending'}</p>
+              <p>Payment: {order.paymentStatus ? 'Done' : 'Pending'}</p>
               <p>Date: {new Date(order.date).toLocaleDateString()}</p>
             </div>
             <p className='text-sm sm:text-[15px]'>${order.amount}</p>
@@ -87,7 +87,9 @@ const Order = ({ token }) => {
               <option value="Delivered">Delivered</option>
             </select>
           </div>
-        ))}
+        )) : (
+          <p className='text-gray-500 text-center py-8'>No orders found</p>
+        )}
       </div>
     </div>
   )

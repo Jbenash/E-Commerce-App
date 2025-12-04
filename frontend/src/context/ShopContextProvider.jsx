@@ -18,7 +18,7 @@ const ShopContextProvider = (props) => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems))
     }, [cartItems])
     const [products, setProducts] = useState([])
-    const [token, setToken] = useState(localStorage.getItem('token') || '')
+    const [token, setToken] = useState('')
 
     const addToCart = async (productId, size) => {
         let cartData = structuredClone(cartItems);
@@ -128,11 +128,44 @@ const ShopContextProvider = (props) => {
             }
         } catch (error) {
             console.error('Error fetching cart:', error)
+            // If token is invalid, clear it
+            if (error.response?.status === 401) {
+                localStorage.removeItem('token')
+                setToken('')
+                setCartItems({})
+            }
+        }
+    }
+
+    const validateToken = async () => {
+        const storedToken = localStorage.getItem('token')
+        if (storedToken) {
+            try {
+                // Try to fetch cart to validate token
+                const response = await axios.post(backendUrl + '/api/cart/get', {}, {
+                    headers: { token: storedToken }
+                })
+                if (response.data.success) {
+                    setToken(storedToken)
+                    getUserCart(storedToken)
+                } else {
+                    // Token is invalid
+                    localStorage.removeItem('token')
+                    setToken('')
+                }
+            } catch (error) {
+                // Token validation failed
+                console.error('Token validation failed:', error)
+                localStorage.removeItem('token')
+                setToken('')
+                setCartItems({})
+            }
         }
     }
 
     useEffect(() => {
         getProductsData()
+        validateToken()
     }, [])
 
     useEffect(() => {

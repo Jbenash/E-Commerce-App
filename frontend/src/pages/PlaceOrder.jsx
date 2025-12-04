@@ -89,25 +89,65 @@ const PlaceOrder = () => {
                 shoppingInfo: shoppingInfo
             }
 
-            // Make API call to place order
-            const response = await axios.post(
-                backendUrl + '/api/order/place',
-                orderData,
-                { headers: { token } }
-            )
+            // Handle different payment methods using switch
+            switch (method) {
+                case 'cod':
+                    // Cash on Delivery - Place order directly
+                    const codResponse = await axios.post(
+                        backendUrl + '/api/order/place',
+                        orderData,
+                        { headers: { token } }
+                    )
 
-            if (response.data.success) {
-                // Clear cart on successful order
-                setCartItems({})
-                localStorage.removeItem('cartItems')
-                
-                // Show success message
-                toast.success('Order placed successfully!')
-                
-                // Navigate to orders page or home
-                navigate('/orders')
-            } else {
-                toast.error(response.data.message || 'Failed to place order')
+                    if (codResponse.data.success) {
+                        setCartItems({})
+                        localStorage.removeItem('cartItems')
+                        toast.success('Order placed successfully!')
+                        navigate('/orders')
+                    } else {
+                        toast.error(codResponse.data.message || 'Failed to place order')
+                    }
+                    break
+
+                case 'stripe':
+                    // Stripe - Initialize payment gateway
+                    const stripeResponse = await axios.post(
+                        backendUrl + '/api/order/stripe',
+                        orderData,
+                        { headers: { token } }
+                    )
+
+                    if (stripeResponse.data.success) {
+                        // Handle Stripe payment initialization
+                        toast.info('Redirecting to Stripe...')
+                        // Add Stripe payment gateway logic here
+                        // You'll need to integrate Stripe SDK
+                    } else {
+                        toast.error(stripeResponse.data.message || 'Failed to initialize payment')
+                    }
+                    break
+
+                case 'razorpay':
+                    // Razorpay - Initialize payment gateway
+                    const razorpayResponse = await axios.post(
+                        backendUrl + '/api/order/razorpay',
+                        orderData,
+                        { headers: { token } }
+                    )
+
+                    if (razorpayResponse.data.success) {
+                        // Handle Razorpay payment initialization
+                        toast.info('Redirecting to Razorpay...')
+                        // Add Razorpay payment gateway logic here
+                        // You'll need to integrate Razorpay SDK
+                    } else {
+                        toast.error(razorpayResponse.data.message || 'Failed to initialize payment')
+                    }
+                    break
+
+                default:
+                    toast.error('Please select a valid payment method')
+                    break
             }
 
         } catch (error) {
@@ -117,7 +157,7 @@ const PlaceOrder = () => {
             setLoading(false)
         }
     }
-    
+
 
     return (
         <form onSubmit={onsubmithandler} className='flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t'>
@@ -229,13 +269,20 @@ const PlaceOrder = () => {
                     {/* Payment Method Selection */}
                     <div className='flex gap-3 flex-col lg:flex-row'>
 
-
                         <div
-                            onClick={() => setMethod('visa')}
+                            onClick={() => setMethod('stripe')}
                             className='flex items-center gap-3 border p-2 px-3 cursor-pointer hover:border-gray-400 transition-colors'
                         >
-                            <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'visa' ? 'bg-green-400' : ''}`}></p>
-                            <FaCcVisa className='text-3xl text-blue-800 mx-2' />
+                            <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'stripe' ? 'bg-green-400' : ''}`}></p>
+                            <FaCcStripe className='text-3xl text-purple-600 mx-2' />
+                        </div>
+
+                        <div
+                            onClick={() => setMethod('razorpay')}
+                            className='flex items-center gap-3 border p-2 px-3 cursor-pointer hover:border-gray-400 transition-colors'
+                        >
+                            <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'razorpay' ? 'bg-green-400' : ''}`}></p>
+                            <SiRazorpay className='text-3xl text-blue-600 mx-2' />
                         </div>
 
                         <div

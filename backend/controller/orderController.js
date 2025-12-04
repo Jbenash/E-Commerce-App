@@ -7,7 +7,7 @@ import userModel from "../model/userModel.js";
 const placeOrder = async (req, res) => {
   try {
     const userId = req.userId;
-    const {items, amount, shoppingInfo } = req.body
+    const { items, amount, shoppingInfo } = req.body
     if (!userId || !items || !amount || !shoppingInfo) {
       res.status(400).json({ success: false, message: "missing fields" })
     }
@@ -22,6 +22,7 @@ const placeOrder = async (req, res) => {
 
     })
     await newOrder.save()
+    await newOrder.save()
 
     await userModel.findByIdAndUpdate(userId, { cartData: {} })
 
@@ -34,18 +35,19 @@ const placeOrder = async (req, res) => {
   }
 }
 
-//placing order using card
-const placeOrderCard = async (req, res) => {
-  try {
 
-  } catch (error) {
-    console.error(error);
-  }
-}
 
 //all orders data for admin panel
 const allOrders = async (req, res) => {
   try {
+
+    const orderData = await orderModel.find({})
+    if (!orderData || orderData.length == 0) return res.status(404).json({ success: false, message: "order data not found" })
+
+    res.status(200).json({ success: true, orderData })
+
+
+
 
   } catch (error) {
     console.error(error);
@@ -54,11 +56,21 @@ const allOrders = async (req, res) => {
 
 
 //user order Data for frontend
-const userOrder = async (params) => {
+const userOrders = async (req, res) => {
   try {
-    // code here
+    const userId = req.userId;
+
+    const orderData = await orderModel.find({ userId })
+
+    if (!orderData) return res.status(404).json({ success: false, message: "order data not found" })
+
+    res.status(200).json({ success: true, orderData })
+
+
+
   } catch (error) {
     console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 }
 
@@ -71,4 +83,4 @@ const updateStatus = async (req, res) => {
   }
 }
 
-export { placeOrder, placeOrderCard, allOrders, updateStatus, userOrder }
+export { placeOrder, allOrders, updateStatus, userOrders }
