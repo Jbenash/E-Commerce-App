@@ -10,6 +10,7 @@ import Orders from './pages/Orders.jsx'
 import PlaceOrder from './pages/PlaceOrder.jsx'
 import Contact from './pages/Contact.jsx'
 import Collection from './pages/Collection.jsx'
+import Verify from './pages/Verify.jsx'
 import Footer from './components/Footer.jsx'
 import SearchBar from './components/SearchBar.jsx'
 import { ToastContainer } from 'react-toastify'
@@ -19,11 +20,11 @@ import { ShopContext } from './context/ShopContext.jsx'
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const { token } = useContext(ShopContext)
-  
+
   if (!token) {
     return <Navigate to='/login' replace />
   }
-  
+
   return children
 }
 
@@ -44,6 +45,7 @@ const App = () => {
         <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
         <Route path='/orders' element={<ProtectedRoute><Orders /></ProtectedRoute>} />
         <Route path='/place-order' element={<ProtectedRoute><PlaceOrder /></ProtectedRoute>} />
+        <Route path='/verify' element={<ProtectedRoute><Verify /></ProtectedRoute>} />
         <Route path='/contact' element={<ProtectedRoute><Contact /></ProtectedRoute>} />
         <Route path='/collection' element={<ProtectedRoute><Collection /></ProtectedRoute>} />
       </Routes>

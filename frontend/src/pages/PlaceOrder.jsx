@@ -115,7 +115,16 @@ const PlaceOrder = () => {
                         backendUrl + '/api/order/stripe',
                         orderData,
                         { headers: { token } }
-                    )
+                    );
+
+                    if (stripeResponse.data.success) {
+                        // Redirect user to Stripe payment page
+                        window.location.href = stripeResponse.data.session_url;
+                    } else {
+                        toast.error("Stripe payment initialization failed");
+                    }
+                    break;
+
 
                     if (stripeResponse.data.success) {
                         // Handle Stripe payment initialization

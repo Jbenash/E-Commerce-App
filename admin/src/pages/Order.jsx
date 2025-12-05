@@ -54,7 +54,17 @@ const Order = ({ token }) => {
       <div>
         {orders && orders.length > 0 ? orders.map((order, index) => (
           <div className='grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700' key={index}>
-            <FiPackage className='w-12 h-12 text-gray-400' />
+            <div className='w-12 h-12'>
+              {order.items[0] && order.items[0].image && order.items[0].image[0] ? (
+                <img
+                  src={order.items[0].image[0]}
+                  alt={order.items[0].name || 'Product'}
+                  className='w-12 h-12 object-cover'
+                />
+              ) : (
+                <FiPackage className='w-12 h-12 text-gray-400' />
+              )}
+            </div>
             <div>
               <div>
                 {order.items.map((item, index) => {
