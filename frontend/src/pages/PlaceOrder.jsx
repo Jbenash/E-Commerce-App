@@ -31,6 +31,35 @@ const PlaceOrder = () => {
         setFormData(data => ({ ...data, [name]: value }))
     }
 
+    const initPay = (order) => {
+        const options = {
+            key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+            amount: order.amount,
+            currency: order.currency,
+            name: 'Order Payment',
+            description: 'Order Payment',
+            order_id: order.id,
+            receipt: order.receipt,
+            handler: async (response) => {
+                console.log(response);
+                try {
+                    const { data } = await axios.post(backendUrl + '/api/order/verifyRazorPay', response, { headers: { token } })
+                    if (data.success) {
+                        navigate('/orders')
+                        setCartItems({})
+                    }
+                } catch (error) {
+                    console.log(error);
+                    toast.error(error)
+
+                }
+            }
+        }
+        const razorpay = new Window.Razorpay(options)
+        razorpay.open()
+    }
+
+
     const onsubmithandler = async (event) => {
         event.preventDefault()
 
@@ -126,16 +155,6 @@ const PlaceOrder = () => {
                     break;
 
 
-                    if (stripeResponse.data.success) {
-                        // Handle Stripe payment initialization
-                        toast.info('Redirecting to Stripe...')
-                        // Add Stripe payment gateway logic here
-                        // You'll need to integrate Stripe SDK
-                    } else {
-                        toast.error(stripeResponse.data.message || 'Failed to initialize payment')
-                    }
-                    break
-
                 case 'razorpay':
                     // Razorpay - Initialize payment gateway
                     const razorpayResponse = await axios.post(
@@ -146,9 +165,8 @@ const PlaceOrder = () => {
 
                     if (razorpayResponse.data.success) {
                         // Handle Razorpay payment initialization
-                        toast.info('Redirecting to Razorpay...')
-                        // Add Razorpay payment gateway logic here
-                        // You'll need to integrate Razorpay SDK
+                        initPay(razorpayResponse.data.order)
+
                     } else {
                         toast.error(razorpayResponse.data.message || 'Failed to initialize payment')
                     }

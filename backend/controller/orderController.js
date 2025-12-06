@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import orderModel from "../model/orderModel.js";
 import userModel from "../model/userModel.js";
 import Stripe from 'stripe'
+import Razerpay from 'razorpay'
 
 //global variables 
 const currency = 'LKR'
@@ -9,6 +10,15 @@ const delivery_charges = 10
 
 //gateway initialize 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+
+// Initialize Razorpay only if credentials are provided
+let razorpay = null
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+  razorpay = new Razerpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+  })
+}
 
 //placing order using cash on delivery
 const placeOrder = async (req, res) => {
@@ -109,9 +119,61 @@ const verifyStripe = async (req, res) => {
 }
 const placeOrderRazerpay = async (req, res) => {
   try {
-    // code here
+    const userId = req.userId;
+    const { items, amount, shoppingInfo } = req.body
+
+    if (!origin) {
+      return res.status(400).json({ success: false, message: "Origin header missing" });
+    }
+    const newOrder = new orderModel({
+      userId,
+      items,
+      amount,
+      shoppingInfo,
+      paymentMethod: "Razorpay",
+      date: Date.now()
+
+    })
+
+    await newOrder.save()
+
+    const options = {
+      amount: amount * 100,
+      currency: currency.toUpperCase(),
+      receipt: newOrder._id.toString()
+    }
+    razorpay.orders.create(options, (error, order) => {
+      if (error) {
+        console.log(error)
+        return res.json({ success: false, message: error })
+      }
+      res.json({ success: true, order })
+    })
   } catch (error) {
     console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
+//verify razor pay 
+
+const verifyRazorPay = async (req, res) => {
+  try {
+    const userId = req.userId
+    const { razorpay_orderId, success } = req.body
+
+    const orderInfo = await razorpay.orders.fetch(razorpay_orderId)
+    if (orderInfo.status == 'paid') {
+      await orderModel.findByIdAndUpdate(orderInfo.receipt, { payment: true })
+      await userModel.findByIdAndUpdate(userId, { cartData: {} })
+      res.json({ success: true, message: "payment successful " })
+    } else {
+      res.json({ success: false, message: "payment failed" })
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+
   }
 }
 
@@ -172,4 +234,4 @@ const updateStatus = async (req, res) => {
   }
 }
 
-export { placeOrder, allOrders, updateStatus, userOrders, placeOrderStripe, placeOrderRazerpay, verifyStripe }
+export { placeOrder, allOrders, updateStatus, userOrders, placeOrderStripe, placeOrderRazerpay, verifyStripe, verifyRazorPay }
