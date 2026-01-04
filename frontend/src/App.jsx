@@ -20,9 +20,10 @@ import { ShopContext } from './context/ShopContext.jsx'
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const { token } = useContext(ShopContext)
+  const location = useLocation()
 
   if (!token) {
-    return <Navigate to='/login' replace />
+    return <Navigate to='/login' state={{ from: location }} replace />
   }
 
   return children
@@ -39,15 +40,15 @@ const App = () => {
       {!isLoginPage && <SearchBar />}
       <Routes>
         <Route path='/login' element={<Login />} />
-        <Route path='/' element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path='/about' element={<ProtectedRoute><About /></ProtectedRoute>} />
-        <Route path='/product/:productId' element={<ProtectedRoute><Product /></ProtectedRoute>} />
-        <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+        <Route path='/' element={<Home />} />
+        <Route path='/collection' element={<Collection />} />
+        <Route path='/about' element={<About />} />
+        <Route path='/contact' element={<Contact />} />
+        <Route path='/product/:productId' element={<Product />} />
+        <Route path='/cart' element={<Cart />} />
         <Route path='/orders' element={<ProtectedRoute><Orders /></ProtectedRoute>} />
         <Route path='/place-order' element={<ProtectedRoute><PlaceOrder /></ProtectedRoute>} />
         <Route path='/verify' element={<ProtectedRoute><Verify /></ProtectedRoute>} />
-        <Route path='/contact' element={<ProtectedRoute><Contact /></ProtectedRoute>} />
-        <Route path='/collection' element={<ProtectedRoute><Collection /></ProtectedRoute>} />
       </Routes>
       {!isLoginPage && <Footer />}
     </div>

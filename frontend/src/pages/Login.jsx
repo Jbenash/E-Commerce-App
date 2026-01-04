@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import axios from 'axios'
 import { ShopContext } from '../context/ShopContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 const Login = () => {
@@ -14,11 +14,14 @@ const Login = () => {
     const [password, setPassword] = useState('')
     const [email, setEmail] = useState('')
 
+    const location = useLocation()
+    const from = location.state?.from?.pathname || '/'
+
     useEffect(() => {
         if (token && token.length > 0) {
-            navigate('/')
+            navigate(from, { replace: true })
         }
-    }, [token, navigate])
+    }, [token, navigate, from])
 
 
     const onSubmitHandler = async (event) => {
@@ -42,7 +45,7 @@ const Login = () => {
                     setToken(response.data.token)
                     localStorage.setItem('token', response.data.token)
                     toast.success('Login successful!')
-                    navigate('/')
+                    navigate(from, { replace: true })
                 } else {
                     toast.error(response.data.message)
                 }

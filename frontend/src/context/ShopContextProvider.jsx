@@ -178,6 +178,12 @@ const ShopContextProvider = (props) => {
     }, [])
 
     useEffect(() => {
+        if (token) {
+            getUserCart(token)
+        }
+    }, [token])
+
+    useEffect(() => {
         const handleStorageChange = () => {
             const storedToken = localStorage.getItem('token')
             if (!storedToken && token) {

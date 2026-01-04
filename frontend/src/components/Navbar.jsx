@@ -13,7 +13,7 @@ const Navbar = () => {
         localStorage.removeItem('token')
         setToken('')
         setCartItems({})
-        navigate('/login')
+        navigate('/')
     }
 
     return (
@@ -58,7 +58,7 @@ const Navbar = () => {
                                     <p onClick={logout} className='cursor-pointer hover:text-black'>Logout</p>
                                 </div>
                             </div>
-                        </> 
+                        </>
                     ) : (
                         <Link to='/login'>
                             <FiUser className='w-5 h-5 cursor-pointer hover:text-gray-900' />

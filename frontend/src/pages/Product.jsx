@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext'
 import { FiStar } from 'react-icons/fi'
 import RelatedProducts from '../components/RelatedProducts'
@@ -8,12 +8,18 @@ import { toast } from 'react-toastify'
 const Product = () => {
 
     const { productId } = useParams()
-    const { products, currency, addToCart } = useContext(ShopContext)
+    const { products, currency, addToCart, token } = useContext(ShopContext)
+    const navigate = useNavigate()
     const [productData, setProductData] = useState(null)
     const [image, setImage] = useState('')
     const [size, setSize] = useState('')
 
     const handleAddToCart = () => {
+        if (!token) {
+            toast.error('Please login to add products to cart')
+            navigate('/login', { state: { from: { pathname: `/product/${productId}` } } })
+            return
+        }
         if (!size) {
             toast.error('Please select a size first!')
             return
